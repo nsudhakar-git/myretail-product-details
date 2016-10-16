@@ -67,7 +67,7 @@ public class ProductService {
 			throws InterruptedException, ExecutionException, JsonProcessingException, IOException {
 		Future<JsonNode> nodeName = null;
 		char quotes = '"';
-		String errorStr = "{ " + quotes + "productID " + quotes + ":" + productID + " , " + quotes + "productName"
+		String errorStr = "{ " + quotes + "productID" + quotes + ":" + productID + " , " + quotes + "productName"
 				+ quotes + ":" + quotes + "Product Name Unavailable" + quotes + "}";
 		JsonNode jsonError = null;
 
