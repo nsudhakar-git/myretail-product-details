@@ -1,7 +1,9 @@
 
 #Product Detail Service
 
-This directory contains the aggregation service that merges the results from Product name service and Product Price service.
+This directory contains the Spring boot aggregation service that merges the results from Product name service and Product Price service.
+
+To run , use maven install and run the jar.
 
 ##Setup
 The API format is ```http://<hostname>:<port>/product/{productID}```
