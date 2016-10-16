@@ -20,7 +20,6 @@ public class Application extends AsyncConfigurerSupport{
 	static Logger logger = LoggerFactory.getLogger(Application.class);
 
 	public static void main(String[] args) {
-		
 		SpringApplication.run(Application.class, args);
 	}
 	@Override

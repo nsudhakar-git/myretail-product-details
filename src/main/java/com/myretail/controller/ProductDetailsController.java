@@ -78,7 +78,7 @@ public class ProductDetailsController {
 	 */
 	@RequestMapping(value = "/product/{productID}", produces = "application/JSON", method = RequestMethod.GET)
 	public JsonNode getProductDetail(@PathVariable(value = "productID") long productID)
-			throws InterruptedException, ExecutionException, IOException {
+			throws  IOException {
 		logger.info("Fetch product detail..." + productID);
 
 		// Call the rest services in sequence. This is done using async using
@@ -88,18 +88,18 @@ public class ProductDetailsController {
 
 		Future<JsonNode> nodeName = service.fetchProductName(productID);
 
-		// Wait for both calls to finish. Time out / max wait time can be set
-		while (!(node.isDone() && nodeName.isDone())) {
-			Thread.sleep(10);
-		}
-		// Combine the JSON nodes.
-		// Assumes the product name node details are merged to price
+		
 		JsonNode nodenew = null;
 		try {
+			// Wait for both calls to finish. Time out / max wait time can be set
+			while (!(node.isDone() && nodeName.isDone())) {
+				Thread.sleep(10);
+			}
+			// Combine the JSON nodes.
+			// Assumes the product name node details are merged to price
 			nodenew = JSONMerge.merge(node.get(), nodeName.get());
 		} catch (InterruptedException | ExecutionException e) {
-			logger.error("Error in merging product price with name" + e.getMessage(), e);
-
+			logger.error("Error in getting product price with name" + e.getMessage(), e);
 		}
 		logger.info(node.toString());
 		return nodenew;

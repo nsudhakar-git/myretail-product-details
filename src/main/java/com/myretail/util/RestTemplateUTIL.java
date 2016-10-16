@@ -31,9 +31,9 @@ public class RestTemplateUTIL {
 		 node = restTemplate.getForObject(string, JsonNode.class);
     	}catch(Exception e){
     		
-			logger.error("Error in getting Price"+e.getMessage());
+			logger.error("Error in getting Price"+e.getMessage(),e);
     	}
-		return new AsyncResult<> (node);
+		return new AsyncResult<>(node);
 	}
 
 }
