@@ -43,7 +43,7 @@ public class ProductService {
 				//Product Price Call successful
 				logger.info(node.toString());
 			} else {
-				errorStr = "{ " + quotes + "productID" + quotes + ":" + productID + " , " + quotes + "price" + quotes
+				errorStr = "{ " + quotes + "productID" + quotes + ":" + productID + " , " + quotes + "priceError:" + quotes
 						+ ": " + quotes + "Price Unavailable" + quotes + "}";
 				ObjectMapper mapper = new ObjectMapper();
 				JsonNode jsonError = mapper.readTree(errorStr);
@@ -60,7 +60,7 @@ public class ProductService {
 	public Future<JsonNode> fetchProductName(long productID) {
 		Future<JsonNode> nodeName = null;
 		char quotes = '"';
-		String errorStr = "{ " + quotes + "productID" + quotes + ":" + productID + " , " + quotes + "productName"
+		String errorStr = "{ " + quotes + "productID" + quotes + ":" + productID + " , " + quotes + "nameError"
 				+ quotes + ":" + quotes + "Product Name Unavailable" + quotes + "}";
 		JsonNode jsonError;
 		try {

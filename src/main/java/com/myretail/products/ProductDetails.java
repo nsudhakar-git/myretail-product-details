@@ -14,17 +14,14 @@ public class ProductDetails {
 
 	@Id
 	long productID;
+	Price price;
+
 	String productName;
-	String location;
 
-	public String getLocation() {
-		return location;
-	}
+	String priceError;
+	String nameError;
 
-	public void setLocation(String location) {
-		this.location = location;
-	}
-
+	
 	public Price getPrice() {
 		return price;
 	}
@@ -33,7 +30,6 @@ public class ProductDetails {
 		this.price = price;
 	}
 
-	Price price;
 
 	public long getProductID() {
 		return productID;

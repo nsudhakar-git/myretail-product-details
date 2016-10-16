@@ -7,6 +7,10 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class JSONMerge {
+	
+	private JSONMerge(){
+		
+	}
 
 	public static JsonNode merge(JsonNode mainNode, JsonNode updateNode) {
 
