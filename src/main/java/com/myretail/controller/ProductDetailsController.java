@@ -35,6 +35,7 @@ import com.myretail.util.RestTemplateUTIL;
 public class ProductDetailsController {
 	static Logger logger = LoggerFactory.getLogger(ProductDetailsController.class);
 
+	private static final String APP_HOME = "My Retail Application to manage Product and prices";
 	@Value("${url.product.price}")
 	private String productPriceURL;
 
@@ -60,7 +61,8 @@ public class ProductDetailsController {
 
 	@RequestMapping("/")
 	public String index() {
-		return "My Retail Application to manage Product and prices";
+
+		return APP_HOME;
 	}
 
 	/**
@@ -76,22 +78,19 @@ public class ProductDetailsController {
 	 */
 	@RequestMapping(value = "/product/{productID}", produces = "application/JSON", method = RequestMethod.GET)
 	public JsonNode getProductDetail(@PathVariable(value = "productID") long productID)
-			throws InterruptedException, ExecutionException, JsonProcessingException, IOException {
+			throws InterruptedException, ExecutionException, IOException {
 		logger.info("Fetch product detail..." + productID);
 
-		// Call the rest services in sequence. This is done using async using Future
-		
+		// Call the rest services in sequence. This is done using async using
+		// Future
+
 		Future<JsonNode> node = service.fetchProductPrice(productID);
 
 		Future<JsonNode> nodeName = service.fetchProductName(productID);
 
-		//Wait for both calls to finish. Time out / max wait time can be set
+		// Wait for both calls to finish. Time out / max wait time can be set
 		while (!(node.isDone() && nodeName.isDone())) {
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				logger.error("Error in fetching product price" + e.getMessage());
-			}
+			Thread.sleep(10);
 		}
 		// Combine the JSON nodes.
 		// Assumes the product name node details are merged to price
@@ -99,7 +98,7 @@ public class ProductDetailsController {
 		try {
 			nodenew = JSONMerge.merge(node.get(), nodeName.get());
 		} catch (InterruptedException | ExecutionException e) {
-			logger.error("Error in merging product price with name" + e.getMessage());
+			logger.error("Error in merging product price with name" + e.getMessage(), e);
 
 		}
 		logger.info(node.toString());
@@ -119,7 +118,7 @@ public class ProductDetailsController {
 	@RequestMapping(value = "/product/{productID}", produces = "application/text", method = RequestMethod.PUT)
 	public String addProduct(@PathVariable(value = "productID") long productID, @RequestBody ProductDetails productb)
 			throws MyRetailException {
-		System.out.println("Update product..." + productID);
+		logger.info("Update product..." + productID);
 		// Setup the resource to be found
 		productb.setProductID(productID);
 

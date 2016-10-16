@@ -1,7 +1,5 @@
 package com.myretail.service;
 
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
@@ -40,9 +38,9 @@ public class ProductService {
 			node = restUtil.getJSONObject(productPriceURL + productID);
 
 			// Simple error JSON. This could be updated to add error codes based
-			// on
-			// data available
+			// on data available
 			if (node != null && node.get() != null) {
+				//Product Price Call successful
 				logger.info(node.toString());
 			} else {
 				errorStr = "{ " + quotes + "productID" + quotes + ":" + productID + " , " + quotes + "price" + quotes
@@ -69,6 +67,7 @@ public class ProductService {
 			nodeName = restUtil.getJSONObject(productDescURL + productID);
 			logger.info("After node name");
 			if (nodeName.get() != null) {
+				//Product Name call successful
 				logger.info(nodeName.toString());
 			} else {
 				ObjectMapper mapper = new ObjectMapper();
