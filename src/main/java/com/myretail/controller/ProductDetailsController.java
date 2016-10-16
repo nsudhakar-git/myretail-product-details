@@ -23,9 +23,10 @@ import com.myretail.products.ProductDetails;
 import com.myretail.service.ProductService;
 import com.myretail.util.JSONMerge;
 import com.myretail.util.RestTemplateUTIL;
+
 /**
- * Service controller for fetching the details about the product. Consolidates call to 
- * Product Name API and the Product price API
+ * Service controller for fetching the details about the product. Consolidates
+ * call to Product Name API and the Product price API
  * 
  * @author Sudhakar
  *
@@ -39,16 +40,16 @@ public class ProductDetailsController {
 
 	@Value("${url.product.desc}")
 	private String productDescURL;
-	
+
 	@Autowired
 	private ProductService service;
 
 	@Autowired
 	private ApplicationContext appContext;
-	
+
 	@Autowired
 	RestTemplateUTIL restUtil;
-	
+
 	public ApplicationContext getAppContext() {
 		return appContext;
 	}
@@ -68,46 +69,43 @@ public class ProductDetailsController {
 	 * @param productID
 	 *            The product ID to be fetched
 	 * @return
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
-	 * @throws IOException 
-	 * @throws JsonProcessingException 
+	 * @throws ExecutionException
+	 * @throws InterruptedException
+	 * @throws IOException
+	 * @throws JsonProcessingException
 	 */
 	@RequestMapping(value = "/product/{productID}", produces = "application/JSON", method = RequestMethod.GET)
-	public JsonNode getProductDetail(@PathVariable(value = "productID") long productID) throws InterruptedException, ExecutionException, JsonProcessingException, IOException {
+	public JsonNode getProductDetail(@PathVariable(value = "productID") long productID)
+			throws InterruptedException, ExecutionException, JsonProcessingException, IOException {
 		logger.info("Fetch product detail..." + productID);
+
+		// Call the rest services in sequence. This is done using async using Future
 		
-		//Call the rest services in sequence. This could be done using async /Future if 
-		//further performance improvements are needed
 		Future<JsonNode> node = service.fetchProductPrice(productID);
 
-		Future<JsonNode> nodeName=service.fetchProductName(productID);		
-		
-		
-		while(!(node.isDone()&&nodeName.isDone())){
+		Future<JsonNode> nodeName = service.fetchProductName(productID);
+
+		//Wait for both calls to finish. Time out / max wait time can be set
+		while (!(node.isDone() && nodeName.isDone())) {
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("Error in fetching product price" + e.getMessage());
 			}
 		}
-		//Combine the JSON nodes.
-		// Assumes the product name node details are merged to price 
-		JsonNode nodenew =null;
+		// Combine the JSON nodes.
+		// Assumes the product name node details are merged to price
+		JsonNode nodenew = null;
 		try {
-			nodenew = JSONMerge.merge( node.get(), nodeName.get());
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			nodenew = JSONMerge.merge(node.get(), nodeName.get());
+		} catch (InterruptedException | ExecutionException e) {
+			logger.error("Error in merging product price with name" + e.getMessage());
+
 		}
 		logger.info(node.toString());
 		return nodenew;
 	}
-	 
+
 	/**
 	 * Service to update the product if it exists, else a new record is inserted
 	 * 
@@ -122,11 +120,11 @@ public class ProductDetailsController {
 	public String addProduct(@PathVariable(value = "productID") long productID, @RequestBody ProductDetails productb)
 			throws MyRetailException {
 		System.out.println("Update product..." + productID);
-		//Setup the resource to be found
+		// Setup the resource to be found
 		productb.setProductID(productID);
 
 		RestTemplate restTemplate = new RestTemplate();
-		//Apply the JSON input to update the record
+		// Apply the JSON input to update the record
 		restTemplate.put(productPriceURL + productID, productb);
 
 		return "{updated(PUT): " + productb.toString() + "}";
