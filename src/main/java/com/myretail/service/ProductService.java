@@ -42,7 +42,7 @@ public class ProductService {
 			node = restUtil.getJSONObject(productPriceURL + productID);
 		} catch (Exception e) {
 			logger.error("Error Requesting the price" + e);
-			errorStr = "{ " + quotes + "productID " + quotes + ":" + productID + " , " + quotes + "price " + quotes
+			errorStr = "{ " + quotes + "productID" + quotes + ":" + productID + " , " + quotes + "price" + quotes
 					+ ": " + quotes + "Price Unavailable" + quotes + "}";
 
 			// Perform error notifications
@@ -52,7 +52,7 @@ public class ProductService {
 		if (node.get() != null) {
 			logger.info(node.toString());
 		} else {
-			errorStr = "{ " + quotes + "productID " + quotes + ":" + productID + " , " + quotes + "price " + quotes
+			errorStr = "{ " + quotes + "productID" + quotes + ":" + productID + " , " + quotes + "price" + quotes
 					+ ": " + quotes + "Price Unavailable" + quotes + "}";
 			ObjectMapper mapper = new ObjectMapper();
 			JsonNode jsonError = mapper.readTree(errorStr);
