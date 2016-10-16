@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.myretail.util.RestTemplateUTIL;
 
 @Service
@@ -30,10 +29,11 @@ public class ProductService {
 	@Autowired
 	RestTemplateUTIL restUtil;
 
-	public Future<JsonNode> fetchProductPrice(long productID) throws InterruptedException, ExecutionException, JsonProcessingException, IOException {
+	public Future<JsonNode> fetchProductPrice(long productID)
+			throws InterruptedException, ExecutionException, JsonProcessingException, IOException {
 		logger.info("Fetch product detail..." + productID);
-		String errorStr="";
-		char quotes ='"';
+		String errorStr = "";
+		char quotes = '"';
 		// Call the rest services in sequence. This could be done using async
 		// /Future if
 		// further performance improvements are needed
@@ -42,34 +42,33 @@ public class ProductService {
 			node = restUtil.getJSONObject(productPriceURL + productID);
 		} catch (Exception e) {
 			logger.error("Error Requesting the price" + e);
-			 errorStr = "{ "+quotes+"productID "+quotes+":" + productID + " , "+quotes+"price "+quotes+": "+quotes+"Price Unavailable"+quotes+"}";
-			
+			errorStr = "{ " + quotes + "productID " + quotes + ":" + productID + " , " + quotes + "price " + quotes
+					+ ": " + quotes + "Price Unavailable" + quotes + "}";
+
 			// Perform error notifications
 		}
 		// Simple error JSON. This could be updated to add error codes based on
 		// data available
-		
-
-		
-		//JsonNode jsonError = JsonNodeFactory.instance.textNode(errorStr.toString());
 		if (node.get() != null) {
 			logger.info(node.toString());
 		} else {
-			// TODO form error JSON node
-			 errorStr = "{ "+quotes+"productID "+quotes+":" + productID + " , "+quotes+"price "+quotes+": "+quotes+"Price Unavailable"+quotes+"}";
+			errorStr = "{ " + quotes + "productID " + quotes + ":" + productID + " , " + quotes + "price " + quotes
+					+ ": " + quotes + "Price Unavailable" + quotes + "}";
 			ObjectMapper mapper = new ObjectMapper();
-			JsonNode jsonError= mapper.readTree(errorStr);
-			//jsonError = JsonNodeFactory.instance.textNode(errorStr);
+			JsonNode jsonError = mapper.readTree(errorStr);
+			// jsonError = JsonNodeFactory.instance.textNode(errorStr);
 			return new AsyncResult<>(jsonError);
 		}
 
 		return node;
 	}
 
-	public Future<JsonNode> fetchProductName(long productID) throws InterruptedException, ExecutionException, JsonProcessingException, IOException {
+	public Future<JsonNode> fetchProductName(long productID)
+			throws InterruptedException, ExecutionException, JsonProcessingException, IOException {
 		Future<JsonNode> nodeName = null;
-		char quotes ='"';
-		String errorStr = "{ "+quotes+"productID "+quotes+":" + productID + " , "+quotes+"productName"+quotes+":"+quotes+"Product Name Unavailable"+quotes+"}";
+		char quotes = '"';
+		String errorStr = "{ " + quotes + "productID " + quotes + ":" + productID + " , " + quotes + "productName"
+				+ quotes + ":" + quotes + "Product Name Unavailable" + quotes + "}";
 		JsonNode jsonError = null;
 
 		nodeName = restUtil.getJSONObject(productDescURL + productID);
@@ -78,8 +77,8 @@ public class ProductService {
 			logger.info(nodeName.toString());
 		} else {
 			ObjectMapper mapper = new ObjectMapper();
-			 jsonError= mapper.readTree(errorStr);
-			//jsonError = JsonNodeFactory.instance.textNode(errorStr);
+			jsonError = mapper.readTree(errorStr);
+			// jsonError = JsonNodeFactory.instance.textNode(errorStr);
 			return new AsyncResult<>(jsonError);
 		}
 
