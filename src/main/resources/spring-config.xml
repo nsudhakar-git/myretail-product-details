@@ -35,6 +35,8 @@
 	<constructor-arg name="mongoOps" ref="mongoTemplate"/>
 </bean>
 
+
+<bean id="restUtil" class="com.myretail.util.RestTemplateUTIL"></bean>
  
         
 </beans>

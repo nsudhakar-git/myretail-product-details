@@ -1,24 +1,28 @@
-package com.myretail;
+package com.myretail.controller;
+
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.NoHandlerFoundException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.myretail.exception.MyRetailException;
 import com.myretail.products.ProductDetails;
+import com.myretail.service.ProductService;
 import com.myretail.util.JSONMerge;
+import com.myretail.util.RestTemplateUTIL;
 /**
  * Service controller for fetching the details about the product. Consolidates call to 
  * Product Name API and the Product price API
@@ -35,10 +39,16 @@ public class ProductDetailsController {
 
 	@Value("${url.product.desc}")
 	private String productDescURL;
+	
+	@Autowired
+	private ProductService service;
 
 	@Autowired
 	private ApplicationContext appContext;
-
+	
+	@Autowired
+	RestTemplateUTIL restUtil;
+	
 	public ApplicationContext getAppContext() {
 		return appContext;
 	}
@@ -58,44 +68,44 @@ public class ProductDetailsController {
 	 * @param productID
 	 *            The product ID to be fetched
 	 * @return
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
+	 * @throws IOException 
+	 * @throws JsonProcessingException 
 	 */
 	@RequestMapping(value = "/product/{productID}", produces = "application/JSON", method = RequestMethod.GET)
-	public JsonNode getProductDetail(@PathVariable(value = "productID") long productID) {
+	public JsonNode getProductDetail(@PathVariable(value = "productID") long productID) throws InterruptedException, ExecutionException, JsonProcessingException, IOException {
 		logger.info("Fetch product detail..." + productID);
-		RestTemplate restTemplate = new RestTemplate();
 		
 		//Call the rest services in sequence. This could be done using async /Future if 
 		//further performance improvements are needed
-		JsonNode node=null;		
-		try{
-		   node = restTemplate.getForObject(productPriceURL + productID, JsonNode.class);
-		}catch(Exception e){
-			logger.error("Error Requesting the price"+e);
-		   //Perform error notifications
-		}
-		//Simple error JSON. This could be updated to add error codes based on data available
-		String errorStr = "{'productID':" + productID + " ,'price':Price Unavailable}";
-		if (node != null) {
-			logger.info(node.toString());
-		} else {
-			node = JsonNodeFactory.instance.textNode(errorStr);
+		Future<JsonNode> node = service.fetchProductPrice(productID);
 
-		}
-
-		JsonNode nodeName = restTemplate.getForObject(productDescURL + productID, JsonNode.class);
-
-		if (nodeName != null) {
-			logger.info(node.toString());
-			logger.info(nodeName.toString());
-		} else {
-			errorStr = "{'productID':" + productID + " ,'productName':'Product Name Unavailable'}";
-			nodeName = JsonNodeFactory.instance.textNode(errorStr);
+		Future<JsonNode> nodeName=service.fetchProductName(productID);		
+		
+		
+		while(!(node.isDone()&&nodeName.isDone())){
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		//Combine the JSON nodes.
 		// Assumes the product name node details are merged to price 
-		node = JSONMerge.merge(node, nodeName);
+		JsonNode nodenew =null;
+		try {
+			nodenew = JSONMerge.merge( node.get(), nodeName.get());
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		logger.info(node.toString());
-		return node;
+		return nodenew;
 	}
 	 
 	/**
