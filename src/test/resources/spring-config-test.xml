@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns:context="http://www.springframework.org/schema/context"
+          xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+          xsi:schemaLocation=
+          "http://www.springframework.org/schema/context
+          http://www.springframework.org/schema/context/spring-context-3.0.xsd
+          http://www.springframework.org/schema/data/mongo
+          http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd
+          http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <!-- Configure the Mongo Server 
+    <mongo:db-factory id="mongo" host="localhost" port="27017"  dbname="test"/>
+    
+    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate" >
+    <constructor-arg ref="mongo"/>
+    <constructor-arg name="databaseName" value="products"/>
+  </bean>-->
+  
+    
+     <mongo:db-factory host="localhost" port="27017" dbname="products" />
+    <!-- MongoDB Template -->
+    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+      <constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>
+    </bean>
+    
+    
+    <bean id="personDAO" class="com.myretail.PersonDAOImpl">
+	<constructor-arg name="mongoOps" ref="mongoTemplate"/>
+</bean>
+
+<bean id="productDAO" class="com.myretail.products.ProductDAOImpl">
+	<constructor-arg name="mongoOps" ref="mongoTemplate"/>
+</bean>
+
+ 
+        
+</beans>
