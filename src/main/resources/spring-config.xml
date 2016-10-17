@@ -20,8 +20,8 @@
   </bean>-->
   
     
-     <mongo:db-factory host="localhost" port="27017" dbname="products" />
-    <!-- MongoDB Template -->
+     <!-- <mongo:db-factory host="${spring.data.mongodb.host}" port="${spring.data.mongodb.port}" dbname="${spring.data.mongodb.database}" />
+    MongoDB Template
     <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
       <constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>
     </bean>
@@ -37,6 +37,6 @@
 
 
 <bean id="restUtil" class="com.myretail.util.RestTemplateUTIL"></bean>
- 
+  -->
         
 </beans>
