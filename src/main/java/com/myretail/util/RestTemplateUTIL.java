@@ -35,5 +35,22 @@ public class RestTemplateUTIL {
     	}
 		return new AsyncResult<>(node);
 	}
+    
+    /**
+     * Synchronous call to call service
+     * @param string
+     * @return
+     */
+	public  boolean putJSONObject(String string,Object obj) {
+    	boolean updated = false;
+    	try{
+		 restTemplate.put(string, obj);
+		 updated =true;
+    	}catch(Exception e){
+    		
+			logger.error("Error in getting Price"+e.getMessage(),e);
+    	}
+		return updated;
+	}
 
 }

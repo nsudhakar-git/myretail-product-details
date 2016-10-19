@@ -116,16 +116,14 @@ public class ProductDetailsController {
 	 * @throws MyRetailException
 	 */
 	@RequestMapping(value = "/product/{productID}", produces = "application/text", method = RequestMethod.PUT)
-	public String addProduct(@PathVariable(value = "productID") long productID, @RequestBody ProductDetails productb)
+	public String updateProduct(@PathVariable(value = "productID") long productID, @RequestBody ProductDetails productb)
 			throws MyRetailException {
 		logger.info("Update product..." + productID);
+		
 		// Setup the resource to be found
 		productb.setProductID(productID);
-
-		RestTemplate restTemplate = new RestTemplate();
-		// Apply the JSON input to update the record
-		restTemplate.put(productPriceURL + productID, productb);
-
+		boolean updated = service.updateProduct(productID, productb);
+		logger.info("Completed PUT request "+updated);
 		return "{updated(PUT): " + productb.toString() + "}";
 	}
 

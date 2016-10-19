@@ -24,11 +24,9 @@ public class AsyncRESTcall {
 	}
 
 	@Async
-	public Future<JsonNode> getJSON(String URI) throws InterruptedException {
-		logger.info("Looking up " + URI);
-		JsonNode results = restTemplate.getForObject(URI, JsonNode.class);
-		// Artificial delay of 1s for demonstration purposes
-		//Thread.sleep(1000L);
+	public Future<JsonNode> getJSON(String uri) throws InterruptedException {
+		logger.info("Looking up " + uri);
+		JsonNode results = restTemplate.getForObject(uri, JsonNode.class);
 		return new AsyncResult<>(results);
 	}
 

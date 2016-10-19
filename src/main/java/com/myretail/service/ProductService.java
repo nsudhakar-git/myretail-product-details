@@ -8,9 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.myretail.exception.MyRetailException;
+import com.myretail.products.ProductDetails;
 import com.myretail.util.RestTemplateUTIL;
 
 @Service
@@ -81,4 +84,16 @@ public class ProductService {
 
 		return nodeName;
 	}
+	
+	public boolean updateProduct(long productID, ProductDetails productb)
+			throws MyRetailException {
+		logger.info("Update product..." + productID);
+		// Setup the resource to be found
+		productb.setProductID(productID);
+
+		// Apply the JSON input to update the record
+		return restUtil.putJSONObject(productPriceURL + productID, productb);
+
+	}
+
 }
