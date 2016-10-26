@@ -24,6 +24,8 @@ import com.myretail.service.ProductService;
 import com.myretail.util.JSONMerge;
 import com.myretail.util.RestTemplateUTIL;
 
+import io.swagger.annotations.ApiOperation;
+
 /**
  * Service controller for fetching the details about the product. Consolidates
  * call to Product Name API and the Product price API
@@ -76,6 +78,8 @@ public class ProductDetailsController {
 	 * @throws IOException
 	 * @throws JsonProcessingException
 	 */
+	
+	@ApiOperation(value = "/product/{productID}", nickname = "/product",notes = "Simple fetch for product")
 	@RequestMapping(value = "/product/{productID}", produces = "application/JSON", method = RequestMethod.GET)
 	public JsonNode getProductDetail(@PathVariable(value = "productID") long productID)
 			throws  IOException {

@@ -6,13 +6,10 @@ package com.myretail.products;
  * @author Sudhakar
  *
  */
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "product")
 public class ProductDetails {
 
-	@Id
+
 	long productID;
 	Price price;
 

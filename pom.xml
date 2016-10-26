@@ -14,13 +14,7 @@
 	</parent>
 
 	<dependencies>
-		<dependency>
 
-			<groupId>org.springframework.data</groupId>
-
-			<artifactId>spring-data-mongodb</artifactId>
-
-		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -39,25 +33,19 @@
 			<scope>test</scope>
 		</dependency>
 		<!-- end::tests[] -->
-
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-rest</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-mongodb</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			</dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.2.2</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.2.2</version>
+            <scope>compile</scope>
+        </dependency>
+		
 	</dependencies>
 
 	<properties>

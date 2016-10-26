@@ -1,6 +1,7 @@
 package com.myretail;
 
 import java.util.Arrays;
+
 import java.util.concurrent.Executor;
 
 import org.slf4j.Logger;
@@ -14,30 +15,35 @@ import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+@EnableSwagger2
 @SpringBootApplication
 @EnableAsync
-public class Application extends AsyncConfigurerSupport{
+public class Application extends AsyncConfigurerSupport {
 	static Logger logger = LoggerFactory.getLogger(Application.class);
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
+
 	@Override
-    public Executor getAsyncExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(2);
-        executor.setMaxPoolSize(2);
-        executor.setQueueCapacity(500);
-        executor.setThreadNamePrefix("MyRetail-");
-        executor.initialize();
-        return executor;
-    }
+	public Executor getAsyncExecutor() {
+		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		executor.setCorePoolSize(2);
+		executor.setMaxPoolSize(2);
+		executor.setQueueCapacity(500);
+		executor.setThreadNamePrefix("MyRetail-");
+		executor.initialize();
+		return executor;
+	}
+
 	@Bean
 	public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
 		return args -> {
 			if (logger.isDebugEnabled()) {
-			logger.info("Inspect the beans provided by Spring Boot:");
-			
+				logger.info("Inspect the beans provided by Spring Boot:");
+
 				String[] beanNames = ctx.getBeanDefinitionNames();
 				Arrays.sort(beanNames);
 				for (String beanName : beanNames) {
