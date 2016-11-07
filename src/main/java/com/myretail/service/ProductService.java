@@ -42,7 +42,7 @@ public class ProductService {
 
 			// Simple error JSON. This could be updated to add error codes based
 			// on data available
-			if (node != null && node.get() != null) {
+			if (node != null) {
 				//Product Price Call successful
 				logger.info(node.toString());
 			} else {
